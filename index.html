@@ -1,188 +1,545 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-Hant-HK">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>我的大學課表時間表 - 線上課表管理與個人時間規劃工具</title>
-    <meta name="description" content="專為大學生設計的線上課表時間表管理工具，方便快速查看每日上課時間、教室地點與課程資訊，助你輕鬆規劃校園生活與學習進度。">
-    <meta name="keywords" content="大學課表, 時間表, 課程規劃, 學校時間表, university timetable, class schedule">
+    <title>2026自訂行程時間表 - 免費線上每週課表/兼職/計畫表產生器</title>
+    <meta name="description" content="最方便的免費線上自訂行程時間表！支援直接點擊網格新增行程、12色分類、黑夜模式，並提供繁體中文、英文等多語言切換。一鍵下載高清時間表截圖，輕鬆規劃大學課表、兼職時間與每週計畫！">
+    <meta name="keywords" content="時間表, 課表產生器, 行程規劃, 每週計畫表, 自訂時間表, 大學課表, timetable, schedule planner">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1541687790282612" crossorigin="anonymous"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root {
-            --primary-color: #0066cc;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #e0e0e0;
+        .timetable-main-grid {
+            display: grid;
+            grid-template-columns: 90px repeat(7, minmax(120px, 1fr));
+            position: relative;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-        }
-        h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            text-align: center;
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 25px;
-        }
-        
-        /* 時間表表格樣式 */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-            min-width: 600px;
-        }
-        th, td {
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            font-size: 14px;
-        }
-        th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: bold;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .course-slot {
-            background-color: #e6f2ff;
-            color: var(--primary-color);
-            font-weight: bold;
-            border-radius: 4px;
-            padding: 8px;
-            font-size: 13px;
-        }
-        .location {
-            font-weight: normal;
-            font-size: 11px;
-            color: #666;
-            display: block;
-            margin-top: 4px;
-        }
-
-        /* 廣告位與SEO樣式 */
-        .ads-box {
-            width: 100%;
-            max-width: 800px;
-            text-align: center;
-            padding: 20px 0;
-            background-color: #eee;
-            border-radius: 8px;
-            color: #666;
-            font-size: 12px;
-            margin: 15px 0;
-            border: 1px dashed #ccc;
-            box-sizing: border-box;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 11px;
-            color: #888;
-        }
-        .seo-footer {
-            max-width: 800px;
-            text-align: left;
-            margin-top: 30px;
-            font-size: 11px;
-            color: #999;
-            line-height: 1.6;
-            border-top: 1px solid #ddd;
-            padding-top: 15px;
-            box-sizing: border-box;
+        .time-slot-row {
+            height: 60px;
         }
     </style>
 </head>
-<body>
+<body id="body" class="bg-slate-50 text-slate-900 font-sans p-3 sm:p-6 md:p-8 transition-colors duration-200 min-h-screen">
 
-<div class="ads-box">
-    廣告贊助 / Advertisements
-</div>
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <div class="w-full text-center my-2 min-h-[90px] bg-slate-100/50 dark:bg-slate-900/50 rounded-xl flex items-center justify-center border border-dashed border-slate-300 dark:border-slate-700 text-xs text-slate-400">
+            廣告贊助 / Advertisements
+        </div>
 
-<div class="container">
-    <h2>我的大學課表時間表</h2>
-    <div class="subtitle">University Class Timetable</div>
-    
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th>時間 (Time)</th>
-                    <th>星期一 (Mon)</th>
-                    <th>星期二 (Tue)</th>
-                    <th>星期三 (Wed)</th>
-                    <th>星期四 (Thu)</th>
-                    <th>星期五 (Fri)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>09:00 - 12:00</td>
-                    <td><div class="course-slot">範例課程 A<span class="location">教室 101</span></div></td>
-                    <td>—</td>
-                    <td><div class="course-slot">範例課程 B<span class="location">教室 202</span></div></td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <td>12:00 - 13:00</td>
-                    <td colspan="5" style="background-color: #f0f0f0; color: #888; font-size: 12px;">午餐時間 (Lunch Break)</td>
-                </tr>
-                <tr>
-                    <td>13:00 - 16:00</td>
-                    <td>—</td>
-                    <td><div class="course-slot">範例課程 C<span class="location">演講廳 I</span></div></td>
-                    <td>—</td>
-                    <td><div class="course-slot">範例課程 D<span class="location">實驗室 3</span></div></td>
-                    <td>—</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="flex flex-wrap justify-end items-center gap-3">
+            <button onclick="toggleDarkMode()" id="btn-dark" class="px-4 py-1.5 text-xs font-semibold rounded-xl border border-slate-300 bg-slate-900 text-white cursor-pointer flex items-center gap-1.5 shadow-sm hover:scale-105 transition">
+                🌙 <span id="txt-dark-btn">黑夜模式</span>
+            </button>
+            <div class="h-5 w-[1px] bg-slate-300"></div>
+            <button onclick="changeLang('zh')" id="btn-zh" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl border bg-blue-600 text-white cursor-pointer shadow-sm">繁體中文</button>
+            <button onclick="changeLang('cn')" id="btn-cn" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl border bg-white text-slate-600 hover:bg-slate-100 cursor-pointer shadow-sm">简体中文</button>
+            <button onclick="changeLang('en')" id="btn-en" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl border bg-white text-slate-600 hover:bg-slate-100 cursor-pointer shadow-sm">English</button>
+        </div>
+
+        <div class="text-center py-2">
+            <h1 id="txt-title" class="text-3xl sm:text-4xl font-extrabold mb-2 tracking-tight">📅 自訂行程時間表</h1>
+            <p id="txt-subtitle" class="text-sm sm:text-base text-slate-600 font-medium">網格支援【直接點擊】！輕鬆規劃你的完美每週行程！</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            <div id="panel-filter" class="bg-white p-5 rounded-2xl shadow-md border border-slate-200/80 flex flex-col justify-between gap-4">
+                <div>
+                    <h3 id="txt-filter-title" class="text-base font-bold mb-3 flex items-center gap-2 text-slate-900">⏰ 顯示時間範圍 (24h)</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <label id="lbl-filter-start" class="block text-slate-500 font-medium mb-1.5">開始時間</label>
+                            <select id="filterStartTime" onchange="updateTimeFilter()" class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white"></select>
+                        </div>
+                        <div>
+                            <label id="lbl-filter-end" class="block text-slate-500 font-medium mb-1.5">結束時間</label>
+                            <select id="filterEndTime" onchange="updateTimeFilter()" class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white"></select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-slate-100 pt-3 flex flex-wrap gap-2">
+                    <button onclick="exportJSON()" id="btn-export" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-xl transition cursor-pointer shadow-sm">💾 備份 JSON</button>
+                    <button onclick="triggerImport()" id="btn-import" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-xl transition cursor-pointer shadow-sm">📂 匯入備份</button>
+                    <button onclick="clearAllCourses()" id="btn-clear" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-bold rounded-xl transition cursor-pointer ml-auto">🗑️ 清空</button>
+                    <input type="file" id="importFile" accept=".json" onchange="importJSON(event)" class="hidden">
+                </div>
+            </div>
+
+            <div id="panel-list" class="bg-white p-5 rounded-2xl shadow-md border border-slate-200/80">
+                <h2 id="txt-list-title" class="text-base font-bold mb-1 text-slate-900">📝 我的每週行程一覽</h2>
+                <p id="txt-list-tip" class="text-[11px] text-slate-400 mb-2 font-medium">💡 點擊行程名稱即可進行修改或調整時間。</p>
+                <ul id="courseList" class="space-y-2 max-h-[135px] overflow-y-auto pr-1 text-sm"></ul>
+            </div>
+
+            <div id="panel-notes" class="bg-white p-5 rounded-2xl shadow-md border border-slate-200/80 flex flex-col justify-between">
+                <h3 id="txt-notes-title" class="text-base font-bold mb-1.5 text-slate-900">📌 本週備忘錄 / 週計畫 To-Do</h3>
+                <textarea id="weeklyNotes" oninput="saveNotes()" rows="4" placeholder="在此輸入本週待辦事項..." class="w-full flex-1 p-3 border border-slate-300 rounded-xl resize-none text-sm"></textarea>
+            </div>
+        </div>
+
+        <div class="w-full space-y-3 pt-4 mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <span id="txt-clash-alert" class="text-xs sm:text-sm text-slate-500 font-medium">⚠️ 同一時段重複加行程會並排大格顯示並觸發提示。</span>
+                <button onclick="downloadTimetable()" id="btn-screenshot" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md transition cursor-pointer text-center">
+                    📸 下載時間表截圖
+                </button>
+            </div>
+
+            <div id="timetableCapture" class="bg-white p-5 rounded-2xl shadow-md border border-slate-200/80 overflow-x-auto w-full">
+                <div class="timetable-main-grid min-w-[900px]" id="timetableMainGrid">
+                    <div id="th-time" class="p-2.5 text-center font-extrabold text-slate-500 border-b border-slate-200 text-xs sm:text-sm">時間</div>
+                    <div id="th-mon" class="p-2.5 text-center font-bold text-slate-900 border-b border-slate-200 text-xs sm:text-sm">Mon</div>
+                    <div id="th-tue" class="p-2.5 text-center font-bold text-slate-900 border-b border-slate-200 text-xs sm:text-sm">Tue</div>
+                    <div id="th-wed" class="p-2.5 text-center font-bold text-slate-900 border-b border-slate-200 text-xs sm:text-sm">Wed</div>
+                    <div id="th-thu" class="p-2.5 text-center font-bold text-slate-700 border-b border-slate-200 text-xs sm:text-sm">Thu</div>
+                    <div id="th-fri" class="p-2.5 text-center font-bold text-slate-700 border-b border-slate-200 text-xs sm:text-sm">Fri</div>
+                    <div id="th-sat" class="p-2.5 text-center font-bold text-amber-600 border-b border-slate-200 text-xs sm:text-sm">Sat</div>
+                    <div id="th-sun" class="p-2.5 text-center font-bold text-amber-600 border-b border-slate-200 text-xs sm:text-sm">Sun</div>
+
+                    <div id="timetableGridBackground" class="contents"></div>
+
+                    <div id="timetableCardsLayer" class="contents"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full text-center my-4 min-h-[90px] bg-slate-100/50 dark:bg-slate-900/50 rounded-xl flex items-center justify-center border border-dashed border-slate-300 dark:border-slate-700 text-xs text-slate-400">
+            廣告贊助 / Advertisements
+        </div>
+
+        <footer id="seo-footer" class="mt-12 pt-6 border-t border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-xs space-y-2">
+            <p>關於「自訂行程時間表 / Weekly Schedule Planner」：這是一款專為大學生、斜槓族、兼職人員設計的線上免安裝工具。無論你需要規劃大學課表、備忘錄 To-Do List、兼職排班還是個人溫習時間表，都能透過直覺的網格點擊輕鬆完成。</p>
+            <p>核心功能包含：12色精美主題分類、自動偵測時間重疊（並排大格顯示與紅框警示）、一鍵備份及匯入 JSON 資料。此外，網頁全面支援 RWD 手機版操作、一鍵切換黑夜模式，並可直接下載高清 PNG 截圖存作手機桌布，是提升每週時間管理效率的最佳工具。</p>
+        </footer>
+
     </div>
 
-    <div class="footer">
-        © 2026 個人校園時間表管理工具. 本網頁僅供個人日常課程與時間規劃查看使用。
+    <div id="courseModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div id="modalBox" class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 text-slate-900">
+            <h3 id="modal-title" class="text-xl font-extrabold mb-5">➕ 新增行程資料</h3>
+            <div class="space-y-5">
+                <div>
+                    <label id="modal-label-name" class="block text-sm font-semibold text-slate-500 mb-1.5">項目 / 行程名稱</label>
+                    <input type="text" id="modalCourseName" class="w-full px-3 py-3 border border-slate-300 rounded-xl bg-white text-slate-900 text-sm">
+                </div>
+                <div>
+                    <label id="modal-label-color" class="block text-sm font-semibold text-slate-500 mb-1.5">選擇行程顏色</label>
+                    <div id="colorPickerContainer" class="flex flex-wrap gap-2.5 py-1 max-w-[360px]"></div>
+                </div>
+                <div>
+                    <label id="modal-label-day" class="block text-sm font-semibold text-slate-500 mb-1.5">星期幾</label>
+                    <select id="modalCourseDay" class="w-full px-3 py-3 border border-slate-300 rounded-xl bg-white text-sm">
+                        <option value="1">星期一 (Mon)</option>
+                        <option value="2">星期二 (Tue)</option>
+                        <option value="3">星期三 (Wed)</option>
+                        <option value="4">星期四 (Thu)</option>
+                        <option value="5">星期五 (Fri)</option>
+                        <option value="6">星期六 (Sat)</option>
+                        <option value="7">星期日 (Sun)</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label id="modal-label-start" class="block text-sm font-semibold text-slate-500 mb-1.5">開始時間</label>
+                        <select id="modalStartTime" onchange="onModalStartChange()" class="w-full px-3 py-3 border border-slate-300 rounded-xl bg-white text-sm"></select>
+                    </div>
+                    <div>
+                        <label id="modal-label-end" class="block text-sm font-semibold text-slate-500 mb-1.5">結束時間</label>
+                        <select id="modalEndTime" class="w-full px-3 py-3 border border-slate-300 rounded-xl bg-white text-sm"></select>
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-3">
+                    <button onclick="closeModal()" id="btn-modal-cancel" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl text-sm transition">取消</button>
+                    <button onclick="saveModalCourse()" id="btn-modal-confirm" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition shadow">確認加入</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="ads-box">
-    廣告贊助 / Advertisements
-</div>
+    <script>
+        const langPack = {
+            zh: {
+                title: "📅 自訂行程時間表", subtitle: "網格支援【直接點擊】！輕鬆規劃你的完美每週行程！",
+                listTitle: "📝 我的每週行程一覽", listTip: "💡 點擊行程名稱即可進行修改或調整時間。",
+                clashAlert: "⚠️ 同一時段重複加行程會並排大格顯示並觸發提示。", screenshot: "📸 下載時間表截圖", time: "時間",
+                modalTitleAdd: "➕ 新增行程資料", modalTitleEdit: "✏️ 修改行程資料",
+                labelName: "項目 / 行程名稱", labelColor: "選擇行程顏色", labelDay: "星期幾", labelStart: "開始時間", labelEnd: "結束時間",
+                btnCancel: "取消", btnConfirmAdd: "確認加入", btnConfirmEdit: "確認修改", placeholder: "例如: 補習 / 兼職 / 溫習",
+                alertInput: "請輸入名稱！", alertTimeOrder: "結束時間必須遲過開始時間！",
+                filterTitle: "⏰ 顯示時間範圍 (24h)", filterStart: "開始時間", filterEnd: "結束時間", darkBtnOn: "黑夜模式", darkBtnOff: "白天模式",
+                confirmClear: "你確定要清空所有的行程嗎？此操作無法還原！", alertImportFail: "匯入失敗，請確保上傳了正確的備份 JSON 檔案！",
+                notesTitle: "📌 本週備忘錄 / 週計畫 To-Do", notesPlaceholder: "在此輸入本週待辦事項...（資料會自動儲存）",
+                days: ['', '星期一 (Mon)', '星期二 (Tue)', '星期三 (Wed)', '星期四 (Thu)', '星期五 (Fri)', '星期六 (Sat)', '星期日 (Sun)']
+            },
+            cn: {
+                title: "📅 自定义行程时间表", subtitle: "网格支持【直接点击】！轻松规划你的完美每周行程！",
+                listTitle: "📝 我的每周行程一览", listTip: "💡 点击行程名称即可进行修改或调整时间。",
+                clashAlert: "⚠️ 同时一时段重复加行程会并排大格显示并触发提示。", screenshot: "📸 下载时间表截图", time: "时间",
+                modalTitleAdd: "➕ 新增行程资料", modalTitleEdit: "✏️ 修改行程资料",
+                labelName: "项目 / 行程名称", labelColor: "选择行程颜色", labelDay: "星期几", labelStart: "开始时间", labelEnd: "结束时间",
+                btnCancel: "取消", btnConfirmAdd: "确认加入", btnConfirmEdit: "确认修改", placeholder: "例如: 补习 / 兼职 / 温习",
+                alertInput: "请输入名称！", alertTimeOrder: "结束时间必须迟过开始时间！",
+                filterTitle: "⏰ 显示时间范围 (24h)", filterStart: "开始时间", filterEnd: "结束时间", darkBtnOn: "黑夜模式", darkBtnOff: "白天模式",
+                confirmClear: "你确定要清空所有的行程吗？此操作无法还原！", alertImportFail: "导入失败，请确保上传了正确的备份 JSON 文件！",
+                notesTitle: "📌 本周备忘录 / 周计划 To-Do", notesPlaceholder: "在此输入本周待办事项...（数据会自动保存）",
+                days: ['', '星期一 (Mon)', '星期二 (Tue)', '星期三 (Wed)', '星期四 (Thu)', '星期五 (Fri)', '星期六 (Sat)', '星期日 (Sun)']
+            },
+            en: {
+                title: "📅 Custom Weekly Schedule Planner", subtitle: "Click any grid cell directly to schedule! Plan your perfect week easily!",
+                listTitle: "📝 My Weekly Overview", listTip: "💡 Click event name to edit details or adjust timings.",
+                clashAlert: "⚠️ Adding multiple events to the same slot will display them side-by-side as large cards.", screenshot: "📸 Download Timetable Screenshot", time: "Time",
+                modalTitleAdd: "➕ Add New Event", modalTitleEdit: "✏️ Edit Event Details",
+                labelName: "Event Name", labelColor: "Select Event Color", labelDay: "Day of the Week", labelStart: "Start Time", labelEnd: "End Time",
+                btnCancel: "Cancel", btnConfirmAdd: "Confirm & Add", btnConfirmEdit: "Save Changes", placeholder: "e.g., Tutor / Part-time / Study",
+                alertInput: "Please enter a name!", alertTimeOrder: "End time must be later than start time!",
+                filterTitle: "⏰ Time Display Range (24h)", filterStart: "Start", filterEnd: "End", darkBtnOn: "Dark Mode", darkBtnOff: "Light Mode",
+                confirmClear: "Are you sure you want to clear all events? This cannot be undone!", alertImportFail: "Import failed. Please ensure you uploaded a valid backup JSON file!",
+                notesTitle: "📌 Weekly Notes / To-Do List", notesPlaceholder: "Enter weekly notes here... (Auto-saves)",
+                days: ['', 'Monday (Mon)', 'Tuesday (Tue)', 'Wednesday (Wed)', 'Thursday (Thu)', 'Friday (Fri)', 'Saturday (Sat)', 'Sunday (Sun)']
+            }
+        };
 
-<div class="seo-footer">
-    <p>關於「大學課表時間表 / University Class Timetable」：本網頁為一款專為高等教育學生打造的線上課表與時間管理工具。學生可以透過此直觀的網頁介面，清晰梳理每週的日常課表、上課時間段、修讀科目以及教室地點位置，避開繁瑣的紙本記錄，實現校園生活的數位化高效規劃。</p>
-    <p>核心優化功能：支援跨裝置（手機、平板、電腦）響應式排版，隨時隨地一鍵查詢每日行程。無論是早上的必修講座、下午的小組實驗課，還是空堂期間的自修與午餐時間規劃，都能在時間表中一目了然。本工具旨在提升每位大學生的自主時間管理能力，合理配置學習與課外活動時間，是課業與校園生活不可或缺的數位助手。</p>
-</div>
+        const colorPalette = [
+            { name: '藍色', preview: 'bg-blue-500', light: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100', dark: 'bg-blue-950/80 text-blue-100 border-blue-800 hover:bg-blue-900/80' },
+            { name: '綠色', preview: 'bg-emerald-500', light: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100', dark: 'bg-emerald-950/80 text-emerald-100 border-emerald-800 hover:bg-emerald-900/80' },
+            { name: '紫色', preview: 'bg-purple-500', light: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100', dark: 'bg-purple-950/80 text-purple-100 border-purple-800 hover:bg-purple-900/80' },
+            { name: '橘色', preview: 'bg-orange-500', light: 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100', dark: 'bg-orange-950/80 text-orange-100 border-orange-800 hover:bg-orange-900/80' },
+            { name: '粉色', preview: 'bg-fuchsia-500', light: 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200 hover:bg-fuchsia-100', dark: 'bg-fuchsia-950/80 text-fuchsia-100 border-fuchsia-800 hover:bg-fuchsia-900/80' },
+            { name: '紅色', preview: 'bg-rose-500', light: 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100', dark: 'bg-rose-950/80 text-rose-100 border-rose-800 hover:bg-rose-900/80' },
+            { name: '靛藍', preview: 'bg-indigo-500', light: 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100', dark: 'bg-indigo-950/80 text-indigo-100 border-indigo-800 hover:bg-indigo-900/80' },
+            { name: '青綠', preview: 'bg-cyan-500', light: 'bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100', dark: 'bg-cyan-950/80 text-cyan-100 border-cyan-800 hover:bg-cyan-900/80' },
+            { name: '琥珀', preview: 'bg-amber-500', light: 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100', dark: 'bg-amber-950/80 text-amber-100 border-amber-800 hover:bg-amber-900/80' },
+            { name: '玫瑰', preview: 'bg-pink-500', light: 'bg-pink-50 text-pink-700 border-pink-200 hover:bg-pink-100', dark: 'bg-pink-950/80 text-pink-100 border-pink-800 hover:bg-pink-900/80' },
+            { name: '墨綠', preview: 'bg-teal-600', light: 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100', dark: 'bg-teal-950/80 text-teal-100 border-teal-800 hover:bg-teal-900/80' },
+            { name: '深灰', preview: 'bg-slate-500', light: 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200', dark: 'bg-slate-800 text-slate-100 border-slate-700 hover:bg-slate-700/80' }
+        ];
 
+        let currentLang = 'zh'; let courses = []; let isDarkMode = false;
+        let editingCourseId = null; let selectedColorIndex = 0; let autoColorCounter = 0;
+        let displayStart = 7; let displayEnd = 21;
+
+        const startSelect = document.getElementById('modalStartTime');
+        const endSelect = document.getElementById('modalEndTime');
+        const filterStartSel = document.getElementById('filterStartTime');
+        const filterEndSel = document.getElementById('filterEndTime');
+        
+        function formatTime(val) {
+            let h = Math.floor(val); let m = (val % 1 === 0) ? '00' : '30';
+            return `${h < 10 ? '0' + h : h}:${m}`;
+        }
+
+        function loadFromLocalStorage() {
+            const savedCourses = localStorage.getItem('timetable_courses');
+            const savedStart = localStorage.getItem('timetable_displayStart');
+            const savedEnd = localStorage.getItem('timetable_displayEnd');
+            const savedDark = localStorage.getItem('timetable_isDarkMode');
+            const savedLang = localStorage.getItem('timetable_lang');
+            const savedNotes = localStorage.getItem('timetable_notes');
+
+            if (savedCourses) courses = JSON.parse(savedCourses);
+            if (savedStart) displayStart = parseFloat(savedStart);
+            if (savedEnd) displayEnd = parseFloat(savedEnd);
+            if (savedLang) currentLang = savedLang;
+            if (savedNotes) document.getElementById('weeklyNotes').value = savedNotes;
+            
+            initTimeDropdowns();
+            if (savedDark === 'true') { isDarkMode = false; toggleDarkMode(); } else { changeLang(currentLang); }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('timetable_courses', JSON.stringify(courses));
+            localStorage.setItem('timetable_displayStart', displayStart);
+            localStorage.setItem('timetable_displayEnd', displayEnd);
+            localStorage.setItem('timetable_isDarkMode', isDarkMode);
+            localStorage.setItem('timetable_lang', currentLang);
+        }
+
+        function saveNotes() { localStorage.setItem('timetable_notes', document.getElementById('weeklyNotes').value); }
+
+        function initTimeDropdowns() {
+            startSelect.innerHTML = ''; filterStartSel.innerHTML = ''; filterEndSel.innerHTML = '';
+            for(let i = 0; i <= 23.5; i += 0.5) {
+                startSelect.options.add(new Option(formatTime(i), i));
+                filterStartSel.options.add(new Option(formatTime(i), i));
+            }
+            for(let i = 0; i <= 24; i += 0.5) {
+                filterEndSel.options.add(new Option(formatTime(i), i));
+            }
+            filterStartSel.value = displayStart; filterEndSel.value = displayEnd;
+        }
+
+        function updateTimeFilter() {
+            let start = parseFloat(filterStartSel.value); let end = parseFloat(filterEndSel.value);
+            if (start >= end) { alert(langPack[currentLang].alertTimeOrder); filterStartSel.value = displayStart; filterEndSel.value = displayEnd; return; }
+            displayStart = start; displayEnd = end; renderTimetable(); saveToLocalStorage();
+        }
+
+        function onModalStartChange() {
+            const currentStart = parseFloat(startSelect.value); const savedEndValue = parseFloat(endSelect.value);
+            endSelect.innerHTML = '';
+            for(let i = currentStart + 0.5; i <= 24; i += 0.5) { endSelect.options.add(new Option(formatTime(i), i)); }
+            if (savedEndValue > currentStart) { endSelect.value = savedEndValue; } 
+            else { endSelect.value = currentStart + 1.0 <= 24 ? currentStart + 1.0 : currentStart + 0.5; }
+        }
+
+        function renderColorPicker() {
+            const container = document.getElementById('colorPickerContainer'); container.innerHTML = '';
+            colorPalette.forEach((color, idx) => {
+                const btn = document.createElement('button'); btn.type = "button";
+                btn.className = `w-7 h-7 rounded-full ${color.preview} cursor-pointer border-2 transition-all transform hover:scale-110 ${idx === selectedColorIndex ? 'border-slate-950 ring-2 ring-offset-1 ring-blue-500' : 'border-transparent'}`;
+                btn.onclick = () => { selectedColorIndex = idx; renderColorPicker(); };
+                container.appendChild(btn);
+            });
+        }
+
+        function openModal(day, timeValue, courseId = null) {
+            editingCourseId = courseId;
+            if (editingCourseId) {
+                const target = courses.find(c => c.id === courseId);
+                if (target) {
+                    document.getElementById('modalCourseName').value = target.name;
+                    document.getElementById('modalCourseDay').value = target.day;
+                    selectedColorIndex = target.colorIndex !== undefined ? target.colorIndex : 0;
+                    startSelect.value = target.start;
+                    onModalStartChange(); endSelect.value = target.end;
+                }
+            } else {
+                document.getElementById('modalCourseDay').value = day; startSelect.value = timeValue;
+                selectedColorIndex = autoColorCounter % colorPalette.length; autoColorCounter++;
+                onModalStartChange();
+            }
+            renderColorPicker(); document.getElementById('courseModal').classList.remove('hidden');
+            document.getElementById('modalCourseName').focus();
+        }
+
+        function closeModal() { document.getElementById('courseModal').classList.add('hidden'); document.getElementById('modalCourseName').value = ''; editingCourseId = null; }
+
+        function saveModalCourse() {
+            const name = document.getElementById('modalCourseName').value.trim();
+            const day = parseInt(document.getElementById('modalCourseDay').value);
+            const start = parseFloat(startSelect.value); const end = parseFloat(endSelect.value);
+            if (!name) { alert(langPack[currentLang].alertInput); return; }
+            if (start >= end) { alert(langPack[currentLang].alertTimeOrder); return; }
+
+            if (editingCourseId) {
+                const target = courses.find(c => c.id === editingCourseId);
+                if (target) { Object.assign(target, { name, day, start, end, colorIndex: selectedColorIndex }); }
+            } else {
+                courses.push({ id: Date.now(), name, day, start, end, colorIndex: selectedColorIndex });
+            }
+            closeModal(); updateUI();
+        }
+
+        function renderTimetable() {
+            const bgContainer = document.getElementById('timetableGridBackground');
+            const cardsContainer = document.getElementById('timetableCardsLayer');
+            bgContainer.innerHTML = ''; cardsContainer.innerHTML = '';
+
+            const borderStyle = isDarkMode ? 'border-slate-800' : 'border-slate-200/60';
+            const totalRows = (displayEnd - displayStart) / 0.5;
+            
+            let currentRow = 2;
+            for (let time = displayStart; time < displayEnd; time += 0.5) {
+                const timeLabel = document.createElement('div');
+                timeLabel.className = `flex items-center justify-center p-2 border-b border-r ${borderStyle} font-mono font-bold text-xs sm:text-sm time-slot-row ${isDarkMode ? 'text-white bg-slate-950/80' : 'text-slate-500 bg-slate-50/50'}`;
+                timeLabel.style.gridColumn = "1"; timeLabel.style.gridRow = `${currentRow}`;
+                timeLabel.innerText = formatTime(time);
+                bgContainer.appendChild(timeLabel);
+
+                for (let day = 1; day <= 7; day++) {
+                    const cell = document.createElement('div');
+                    cell.className = `border-b border-r ${borderStyle} time-slot-row p-1 flex items-stretch justify-center`;
+                    cell.style.gridColumn = `${day + 1}`; cell.style.gridRow = `${currentRow}`;
+
+                    const addBtn = document.createElement('div');
+                    addBtn.className = `w-full h-full text-transparent hover:text-slate-400 font-extrabold text-base rounded-xl border border-dashed flex items-center justify-center cursor-pointer transition-all ${isDarkMode ? 'hover:bg-slate-800 border-slate-800 hover:border-slate-600' : 'hover:bg-slate-100 border-slate-200 hover:border-slate-400'}`;
+                    addBtn.innerText = '＋'; addBtn.setAttribute('onclick', `openModal(${day}, ${time})`);
+                    
+                    cell.appendChild(addBtn); bgContainer.appendChild(cell);
+                }
+                currentRow++;
+            }
+
+            for (let day = 1; day <= 7; day++) {
+                const dayCourses = courses.filter(c => c.day === day && c.start < displayEnd && c.end > displayStart);
+                if (dayCourses.length === 0) continue;
+
+                let timeTracks = [];
+                for (let t = displayStart; t < displayEnd; t += 0.5) { timeTracks.push([]); }
+
+                dayCourses.forEach(course => {
+                    let startIdx = Math.max(0, (course.start - displayStart) / 0.5);
+                    let endIdx = Math.min(timeTracks.length, (course.end - displayStart) / 0.5);
+                    let targetCol = 0;
+                    while (true) {
+                        let conflict = false;
+                        for (let i = startIdx; i < endIdx; i++) {
+                            if (timeTracks[i][targetCol]) { conflict = true; break; }
+                        }
+                        if (!conflict) break;
+                        targetCol++;
+                    }
+                    for (let i = startIdx; i < endIdx; i++) { timeTracks[i][targetCol] = course; }
+                    course._tempCol = targetCol;
+                });
+
+                dayCourses.forEach(course => {
+                    let startIdx = Math.max(0, (course.start - displayStart) / 0.5);
+                    let endIdx = Math.min(timeTracks.length, (course.end - displayStart) / 0.5);
+                    let maxColsInRegion = 1;
+                    for (let i = startIdx; i < endIdx; i++) {
+                        maxColsInRegion = Math.max(maxColsInRegion, timeTracks[i].filter(Boolean).length);
+                    }
+                    course._tempMaxCols = maxColsInRegion;
+                });
+
+                dayCourses.forEach(course => {
+                    const gridStartRow = 2 + Math.max(0, (course.start - displayStart) / 0.5);
+                    const gridEndRow = 2 + Math.min(totalRows, (course.end - displayStart) / 0.5);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'p-1 pointer-events-none';
+                    card.style.gridColumn = `${day + 1}`; card.style.gridRow = `${gridStartRow} / ${gridEndRow}`;
+                    card.style.zIndex = "10"; card.style.display = 'flex'; card.style.justifyContent = 'stretch';
+                    card.style.paddingLeft = `${(course._tempCol / course._tempMaxCols) * 100}%`;
+                    card.style.paddingRight = `${((course._tempMaxCols - course._tempCol - 1) / course._tempMaxCols) * 100}%`;
+
+                    const inner = document.createElement('div');
+                    const theme = colorPalette[course.colorIndex !== undefined ? course.colorIndex : 0] || colorPalette[0];
+                    const bgClass = isDarkMode ? theme.dark : theme.light;
+                    const clashBorder = course._tempMaxCols > 1 ? 'border-red-500 border-2 shadow-md' : 'border shadow-sm';
+
+                    inner.className = `${bgClass} ${clashBorder} w-full h-full rounded-xl p-2 font-bold text-xs sm:text-sm flex flex-col justify-center items-center text-center transition-all cursor-pointer pointer-events-auto break-all select-none overflow-hidden`;
+                    inner.innerHTML = `<span class="line-clamp-3">${course.name}</span><span class="text-[10px] opacity-70 mt-1 font-mono">${formatTime(course.start)} - ${formatTime(course.end)}</span>`;
+                    inner.setAttribute('onclick', `openModal(null, null, ${course.id})`);
+
+                    card.appendChild(inner); cardsContainer.appendChild(card);
+                });
+            }
+        }
+
+        function deleteCourse(id) { courses = courses.filter(c => c.id !== id); updateUI(); }
+        function clearAllCourses() { if (confirm(langPack[currentLang].confirmClear)) { courses = []; updateUI(); } }
+        
+        function exportJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(courses));
+            const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "timetable_backup.json");
+            document.body.appendChild(dl); dl.click(); dl.remove();
+        }
+        function triggerImport() { document.getElementById('importFile').click(); }
+        function importJSON(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try { const imported = JSON.parse(e.target.result); if (Array.isArray(imported)) { courses = imported; updateUI(); } else { alert(langPack[currentLang].alertImportFail); } } 
+                catch (err) { alert(langPack[currentLang].alertImportFail); }
+            };
+            reader.readAsText(file); event.target.value = '';
+        }
+
+        function updateUI() {
+            renderTimetable(); const list = document.getElementById('courseList'); list.innerHTML = '';
+            courses.forEach(c => {
+                const li = document.createElement('li');
+                let borderClashClass = isDarkMode ? 'border-slate-800 bg-slate-950 hover:border-slate-700' : 'border-slate-100 bg-slate-50 hover:border-slate-200';
+                const themeColors = colorPalette[c.colorIndex !== undefined ? c.colorIndex : 0] || colorPalette[0];
+
+                li.className = `flex justify-between items-center p-2 rounded-xl border shadow-sm transition-all ${borderClashClass}`;
+                li.innerHTML = `
+                    <span class="truncate mr-2 flex-1 font-medium cursor-pointer flex items-center gap-2" onclick="openModal(null, null, ${c.id})">
+                        <span class="w-3 h-3 rounded-full ${themeColors.preview} shrink-0"></span>
+                        <strong class="text-xs sm:text-sm truncate">${c.name}</strong>
+                        <span class="text-[11px] font-semibold text-slate-400 shrink-0">(${langPack[currentLang].days[c.day].split(' ')[0]} ${formatTime(c.start)}-${formatTime(c.end)})</span>
+                    </span>
+                    <button onclick="deleteCourse(${c.id}); event.stopPropagation();" class="text-red-400 hover:text-red-600 font-bold px-1 bg-transparent border-none text-xs sm:text-sm transition">❌</button>
+                `;
+                list.appendChild(li);
+            });
+            saveToLocalStorage();
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode; const body = document.getElementById('body');
+            const elements = {
+                btnDark: document.getElementById('btn-dark'), darkBtnText: document.getElementById('txt-dark-btn'),
+                txtTitle: document.getElementById('txt-title'), txtSubtitle: document.getElementById('txt-subtitle'),
+                txtClashAlert: document.getElementById('txt-clash-alert'), panelFilter: document.getElementById('panel-filter'),
+                panelList: document.getElementById('panel-list'), timetableCapture: document.getElementById('timetableCapture'),
+                modalBox: document.getElementById('modalBox'), panelNotes: document.getElementById('panel-notes'),
+                filterTitle: document.getElementById('txt-filter-title'), listTitle: document.getElementById('txt-list-title'), notesTitle: document.getElementById('txt-notes-title')
+            };
+
+            if (isDarkMode) {
+                body.className = "bg-slate-950 text-white font-sans p-3 sm:p-6 md:p-8 transition-colors duration-200 min-h-screen";
+                elements.btnDark.className = "px-4 py-1.5 text-xs font-semibold rounded-xl border border-slate-700 bg-white text-black cursor-pointer flex items-center gap-1.5 hover:scale-105 transition";
+                elements.txtTitle.className = "text-3xl sm:text-4xl font-extrabold mb-3 tracking-tight text-white";
+                elements.txtSubtitle.className = "text-sm sm:text-base text-slate-200 font-medium";
+                elements.txtClashAlert.className = "text-xs sm:text-sm text-slate-300 font-medium";
+                elements.panelFilter.className = "bg-slate-900/90 p-5 rounded-2xl border border-slate-800 text-white flex flex-col justify-between gap-4";
+                elements.panelList.className = "bg-slate-900/90 p-5 rounded-2xl border border-slate-800 text-white";
+                elements.timetableCapture.className = "bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl border border-slate-800/80 overflow-x-auto w-full";
+                elements.modalBox.className = "bg-slate-900 rounded-2xl p-6 sm:p-8 max-w-md w-full border border-slate-800 text-white";
+                elements.panelNotes.className = "bg-slate-900/90 p-5 rounded-2xl border border-slate-800 text-white flex flex-col justify-between";
+                elements.filterTitle.className = "text-white text-base font-bold mb-3"; elements.listTitle.className = "text-white text-base font-bold mb-1"; elements.notesTitle.className = "text-white text-base font-bold mb-1.5";
+            } else {
+                body.className = "bg-slate-50 text-slate-900 font-sans p-3 sm:p-6 md:p-8 transition-colors duration-200 min-h-screen";
+                elements.btnDark.className = "px-4 py-1.5 text-xs font-semibold rounded-xl border border-slate-300 bg-slate-900 text-white cursor-pointer flex items-center gap-1.5 hover:scale-105 transition";
+                elements.txtTitle.className = "text-3xl sm:text-4xl font-extrabold mb-3 tracking-tight text-slate-900";
+                elements.txtSubtitle.className = "text-sm sm:text-base text-slate-600 font-medium";
+                elements.txtClashAlert.className = "text-xs sm:text-sm text-slate-500 font-medium";
+                elements.panelFilter.className = "bg-white p-5 rounded-2xl border border-slate-200/80 text-slate-900 flex flex-col justify-between gap-4";
+                elements.panelList.className = "bg-white p-5 rounded-2xl border border-slate-200/80 text-slate-900";
+                elements.timetableCapture.className = "bg-white p-5 rounded-2xl border border-slate-200/80 overflow-x-auto w-full";
+                elements.modalBox.className = "bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full border border-slate-200 text-slate-900";
+                elements.panelNotes.className = "bg-white p-5 rounded-2xl border border-slate-200/80 text-slate-900 flex flex-col justify-between";
+                elements.filterTitle.className = "text-slate-900 text-base font-bold mb-3"; elements.listTitle.className = "text-slate-900 text-base font-bold mb-1"; elements.notesTitle.className = "text-slate-900 text-base font-bold mb-1.5";
+            }
+            changeLang(currentLang);
+        }
+
+        function changeLang(lang) {
+            currentLang = lang; const p = langPack[lang];
+            document.getElementById('txt-title').innerText = p.title; document.getElementById('txt-subtitle').innerText = p.subtitle;
+            document.getElementById('txt-list-title').innerText = p.listTitle; document.getElementById('txt-list-tip').innerText = p.listTip;
+            document.getElementById('txt-clash-alert').innerText = p.clashAlert; document.getElementById('btn-screenshot').innerText = p.screenshot;
+            document.getElementById('th-time').innerText = p.time; document.getElementById('txt-filter-title').innerText = p.filterTitle;
+            document.getElementById('lbl-filter-start').innerText = p.filterStart; document.getElementById('lbl-filter-end').innerText = p.filterEnd;
+            document.getElementById('txt-dark-btn').innerText = isDarkMode ? p.darkBtnOff : p.darkBtnOn;
+            document.getElementById('modal-label-name').innerText = p.labelName; document.getElementById('modal-label-color').innerText = p.labelColor;
+            document.getElementById('modal-label-day').innerText = p.labelDay; document.getElementById('modal-label-start').innerText = p.labelStart;
+            document.getElementById('modal-label-end').innerText = p.labelEnd; document.getElementById('btn-modal-cancel').innerText = p.btnCancel;
+            document.getElementById('modalCourseName').placeholder = p.placeholder; document.getElementById('txt-notes-title').innerText = p.notesTitle;
+            document.getElementById('weeklyNotes').placeholder = p.notesPlaceholder;
+            document.getElementById('btn-modal-confirm').innerText = editingCourseId ? p.btnConfirmEdit : p.btnConfirmAdd;
+            document.getElementById('modal-title').innerText = editingCourseId ? p.modalTitleEdit : p.modalTitleAdd;
+
+            ['zh', 'cn', 'en'].forEach(l => {
+                const btn = document.getElementById(`btn-${l}`);
+                btn.className = l === lang ? "px-3.5 py-1.5 text-xs font-semibold rounded-xl border bg-blue-600 text-white cursor-pointer shadow-sm" : `px-3.5 py-1.5 text-xs font-semibold rounded-xl border cursor-pointer shadow-sm ${isDarkMode ? 'border-slate-700 bg-slate-900 text-white hover:bg-slate-800' : 'bg-white text-slate-600 hover:bg-slate-100'}`;
+            });
+            const daySelect = document.getElementById('modalCourseDay');
+            for(let i=1; i<=7; i++) { daySelect.options[i-1].text = p.days[i]; }
+            
+            document.getElementById('th-time').className = `p-2.5 text-center font-extrabold text-xs sm:text-sm border-b ${isDarkMode ? 'border-slate-800 text-white':'border-slate-200 text-slate-500'}`;
+            ['mon', 'tue', 'wed'].forEach(d => document.getElementById(`th-${d}`).className = `p-2.5 text-center font-bold text-xs sm:text-sm border-b ${isDarkMode ? 'border-slate-800 text-white':'border-slate-200 text-slate-900'}`);
+            ['thu', 'fri'].forEach(d => document.getElementById(`th-${d}`).className = `p-2.5 text-center font-bold text-xs sm:text-sm border-b ${isDarkMode ? 'border-slate-800 text-white':'border-slate-200 text-slate-700'}`);
+            ['sat', 'sun'].forEach(d => document.getElementById(`th-${d}`).className = `p-2.5 text-center font-bold text-xs sm:text-sm border-b ${isDarkMode ? 'border-slate-800 text-white':'border-slate-200 text-amber-600'}`);
+
+            updateUI();
+        }
+
+        function downloadTimetable() {
+            html2canvas(document.getElementById('timetableCapture')).then(canvas => {
+                const link = document.createElement('a'); link.download = 'my-timetable.png'; link.href = canvas.toDataURL(); link.click();
+            });
+        }
+
+        loadFromLocalStorage();
+    </script>
 </body>
 </html>
