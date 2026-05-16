@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>2026香港薪俸稅計算機 - 最新2025/26年度免費線上稅務試算工具</title>
-    <meta name="description" content="最方便的2025/26最新版香港薪俸稅計算機！支援自動計算強積金（MPF）法定供款、單身/已婚基本免稅額、子女及父母供養免稅額。自動切換累進稅率與標準稅率擇輕評稅，一鍵預估最終應繳稅款與政府寬減！">
-    <meta name="keywords" content="薪俸稅計算機, 香港稅務計算, 報稅試算, 免稅額, 強積金扣除, 2025稅率, 2026報稅, salaries tax calculator hong kong">
+    <title>我的大學課表時間表 - 線上課表管理與個人時間規劃工具</title>
+    <meta name="description" content="專為大學生設計的線上課表時間表管理工具，方便快速查看每日上課時間、教室地點與課程資訊，助你輕鬆規劃校園生活與學習進度。">
+    <meta name="keywords" content="大學課表, 時間表, 課程規劃, 學校時間表, university timetable, class schedule">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1541687790282612" crossorigin="anonymous"></script>
 
@@ -16,6 +16,7 @@
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
             --text-color: #333333;
+            --border-color: #e0e0e0;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
@@ -29,7 +30,7 @@
         }
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             background: var(--card-bg);
             padding: 25px;
             border-radius: 12px;
@@ -47,89 +48,53 @@
             color: #666;
             margin-bottom: 25px;
         }
-        .section-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--primary-color);
-            border-bottom: 2px solid #e6f2ff;
-            padding-bottom: 5px;
-            margin-top: 25px;
-            margin-bottom: 15px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        input[type="number"], select {
+        
+        /* 時間表表格樣式 */
+        .table-responsive {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 10px;
-            transform: scale(1.2);
-        }
-        .sub-input {
-            margin-left: 25px;
-            margin-top: 5px;
-            display: none;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
+            overflow-x: auto;
             margin-top: 20px;
         }
-        button:hover {
-            background-color: #0052a3;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            min-width: 600px;
         }
-        .result-box {
-            margin-top: 25px;
-            padding: 15px;
-            background-color: #e6f2ff;
-            border-left: 5px solid var(--primary-color);
-            border-radius: 4px;
-            display: none;
-        }
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
             font-size: 14px;
         }
-        .result-total {
-            border-top: 1px solid #b3d7ff;
-            padding-top: 10px;
-            font-size: 18px;
+        th {
+            background-color: var(--primary-color);
+            color: white;
             font-weight: bold;
-            color: #d9534f;
-            margin-top: 10px;
         }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .course-slot {
+            background-color: #e6f2ff;
+            color: var(--primary-color);
+            font-weight: bold;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 13px;
+        }
+        .location {
+            font-weight: normal;
+            font-size: 11px;
+            color: #666;
+            display: block;
+            margin-top: 4px;
+        }
+
         /* 廣告位與SEO樣式 */
         .ads-box {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             text-align: center;
-            my-4: 15px;
             padding: 20px 0;
             background-color: #eee;
             border-radius: 8px;
@@ -137,9 +102,16 @@
             font-size: 12px;
             margin: 15px 0;
             border: 1px dashed #ccc;
+            box-sizing: border-box;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 11px;
+            color: #888;
         }
         .seo-footer {
-            max-width: 600px;
+            max-width: 800px;
             text-align: left;
             margin-top: 30px;
             font-size: 11px;
@@ -147,6 +119,7 @@
             line-height: 1.6;
             border-top: 1px solid #ddd;
             padding-top: 15px;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -157,118 +130,48 @@
 </div>
 
 <div class="container">
-    <h2>香港薪俸稅計算機</h2>
-    <div class="subtitle">基於 2025/26 年度稅制政策</div>
+    <h2>我的大學課表時間表</h2>
+    <div class="subtitle">University Class Timetable</div>
     
-    <div class="section-title">1. 年收入與強積金</div>
-    <div class="form-group">
-        <label for="income">全年總收入 (HKD):</label>
-        <input type="number" id="income" placeholder="例如: 360000" min="0">
-    </div>
-    <div class="form-group">
-        <label for="mpfType">強積金 (MPF) 計算方式:</label>
-        <select id="mpfType" onchange="toggleMpfInput()">
-            <option value="auto">法定強制性供款 (5%, 上限 $18,000)</option>
-            <option value="custom">自訂全年 MPF 供款金額</option>
-            <option value="none">免除 / 無須供款</option>
-        </select>
-        <div id="customMpfDiv" class="sub-input">
-            <input type="number" id="customMpf" placeholder="輸入全年實際 MPF 供款" min="0">
-        </div>
-    </div>
-
-    <div class="section-title">2. 個人與家庭免稅額 (可多選)</div>
-    
-    <div class="form-group">
-        <label for="status">基本狀況:</label>
-        <select id="status">
-            <option value="single">單身 / 分開評稅 (免稅額 $132,000)</option>
-            <option value="married">已婚 (合併評稅 免稅額 $264,000)</option>
-        </select>
-    </div>
-
-    <div class="checkbox-group">
-        <input type="checkbox" id="chkChild" onchange="toggleSubInput('chkChild', 'divChild')">
-        <label for="chkChild">供養子女</label>
-    </div>
-    <div id="divChild" class="sub-input">
-        <label style="font-weight:normal; font-size:13px;">子女數目（每名 $130,000）：</label>
-        <input type="number" id="childCount" value="0" min="0" max="20">
-    </div>
-
-    <div class="checkbox-group">
-        <input type="checkbox" id="chkParent" onchange="toggleSubInput('chkParent', 'divParent')">
-        <label for="chkParent">供養 55-59 歲父母/祖父母 (同住或給予生活費)</label>
-    </div>
-    <div id="divParent" class="sub-input">
-        <label style="font-weight:normal; font-size:13px;">人數（每名 $25,000，同住再加 $25,000）：</label>
-        <input type="number" id="parentCount" value="0" min="0">
-        <div style="margin-top:5px;">
-            <input type="checkbox" id="chkParentReside"> <span style="font-size:13px;">全部均為全年同住</span>
-        </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>時間 (Time)</th>
+                    <th>星期一 (Mon)</th>
+                    <th>星期二 (Tue)</th>
+                    <th>星期三 (Wed)</th>
+                    <th>星期四 (Thu)</th>
+                    <th>星期五 (Fri)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>09:00 - 12:00</td>
+                    <td><div class="course-slot">範例課程 A<span class="location">教室 101</span></div></td>
+                    <td>—</td>
+                    <td><div class="course-slot">範例課程 B<span class="location">教室 202</span></div></td>
+                    <td>—</td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td>12:00 - 13:00</td>
+                    <td colspan="5" style="background-color: #f0f0f0; color: #888; font-size: 12px;">午餐時間 (Lunch Break)</td>
+                </tr>
+                <tr>
+                    <td>13:00 - 16:00</td>
+                    <td>—</td>
+                    <td><div class="course-slot">範例課程 C<span class="location">演講廳 I</span></div></td>
+                    <td>—</td>
+                    <td><div class="course-slot">範例課程 D<span class="location">實驗室 3</span></div></td>
+                    <td>—</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="checkbox-group">
-        <input type="checkbox" id="chkParentSenior" onchange="toggleSubInput('chkParentSenior', 'divParentSenior')">
-        <label for="chkParentSenior">供養 60 歲或以上父母/祖父母</label>
-    </div>
-    <div id="divParentSenior" class="sub-input">
-        <label style="font-weight:normal; font-size:13px;">人數（每名 $50,000，同住再加 $50,000）：</label>
-        <input type="number" id="parentSeniorCount" value="0" min="0">
-        <div style="margin-top:5px;">
-            <input type="checkbox" id="chkParentSeniorReside"> <span style="font-size:13px;">全部均為全年同住</span>
-        </div>
-    </div>
-
-    <div class="section-title">3. 可扣稅項目</div>
-    <div class="checkbox-group">
-        <input type="checkbox" id="chkHomeLoan" onchange="toggleSubInput('chkHomeLoan', 'divHomeLoan')">
-        <label for="chkHomeLoan">居所貸款利息 / 住宅租金扣除</label>
-    </div>
-    <div id="divHomeLoan" class="sub-input">
-        <label style="font-weight:normal; font-size:13px;">全年實際支出 (上限 $100,000)：</label>
-        <input type="number" id="homeLoanAmt" value="0" min="0" max="100000">
-    </div>
-
-    <button onclick="calculateTax()">開始計算</button>
-
-    <div class="result-box" id="resultBox">
-        <div class="result-item">
-            <span>全年總收入:</span>
-            <span id="resIncome">$0</span>
-        </div>
-        <div class="result-item" style="color: #555;">
-            <span>強積金 (MPF) 供款總額:</span>
-            <span id="resMPF">-$0</span>
-        </div>
-        <div class="result-item">
-            <span>總免稅額及扣除額:</span>
-            <span id="resAllowance">-$0</span>
-        </div>
-        <div class="result-item" style="border-bottom: 1px dashed #ccc; padding-bottom: 8px;">
-            <span>應課稅入息實額:</span>
-            <span id="resNetChargeable" style="font-weight: bold;">$0</span>
-        </div>
-        <div class="result-item" style="margin-top: 8px; font-size: 13px; color:#666;">
-            <span>計算模式:</span>
-            <span id="resMode">-</span>
-        </div>
-        <div class="result-item">
-            <span>預估薪俸稅款 (未計寬減):</span>
-            <span id="resRawTax">$0</span>
-        </div>
-        <div class="result-item">
-            <span>政府稅款寬減 (上限$3,000):</span>
-            <span id="resReduction">-$0</span>
-        </div>
-        <div class="result-item result-total">
-            <span>最終應繳稅款:</span>
-            <span id="resFinalTax">$0</span>
-        </div>
-    </div>
-    
     <div class="footer">
-        © 2026 香港實用稅務工具. 免責聲明：計算結果僅供參考，實際稅額以稅務局評稅通知書為準。
+        © 2026 個人校園時間表管理工具. 本網頁僅供個人日常課程與時間規劃查看使用。
     </div>
 </div>
 
@@ -277,124 +180,9 @@
 </div>
 
 <div class="seo-footer">
-    <p>關於「香港薪俸稅計算機 / HK Salaries Tax Calculator」：本線上稅務試算工具嚴格依據香港稅務局 2025/2026 年度的最新稅制政策設計。旨在為香港僱員、打工仔、斜槓族及已婚家庭提供精確、快速且完全免費的報稅預估服務。</p>
-    <p>核心優化功能：精準試算基本免稅額、已婚免稅額、子女免稅額、供養父母及祖父母免稅額（包含全年同住額外寬免）。系統會自動依據您的入息淨額，智慧比對「累進稅率」與「標準稅率」，採取擇輕評稅原則，並將財政預算案中的政府稅款寬減扣除額（100%上限$3,000）納入計算，讓您一鍵即可掌握最真實的應繳稅款、強積金（MPF）扣除上限及居所貸款利息扣除，是您年度稅務規劃的最佳助手。</p>
+    <p>關於「大學課表時間表 / University Class Timetable」：本網頁為一款專為高等教育學生打造的線上課表與時間管理工具。學生可以透過此直觀的網頁介面，清晰梳理每週的日常課表、上課時間段、修讀科目以及教室地點位置，避開繁瑣的紙本記錄，實現校園生活的數位化高效規劃。</p>
+    <p>核心優化功能：支援跨裝置（手機、平板、電腦）響應式排版，隨時隨地一鍵查詢每日行程。無論是早上的必修講座、下午的小組實驗課，還是空堂期間的自修與午餐時間規劃，都能在時間表中一目了然。本工具旨在提升每位大學生的自主時間管理能力，合理配置學習與課外活動時間，是課業與校園生活不可或缺的數位助手。</p>
 </div>
-
-<script>
-function toggleMpfInput() {
-    const type = document.getElementById('mpfType').value;
-    document.getElementById('customMpfDiv').style.display = (type === 'custom') ? 'block' : 'none';
-}
-
-function toggleSubInput(chkId, divId) {
-    const chk = document.getElementById(chkId);
-    document.getElementById(divId).style.display = chk.checked ? 'block' : 'none';
-}
-
-function calculateTax() {
-    const income = parseFloat(document.getElementById('income').value) || 0;
-    
-    // 1. 計算 MPF
-    let mpf = 0;
-    const mpfType = document.getElementById('mpfType').value;
-    if (mpfType === 'auto') {
-        mpf = Math.min(income * 0.05, 18000);
-    } else if (mpfType === 'custom') {
-        mpf = parseFloat(document.getElementById('customMpf').value) || 0;
-    }
-
-    // 2. 計算免稅額
-    let totalAllowance = 0;
-    
-    // 基本 / 已婚免稅額
-    const status = document.getElementById('status').value;
-    totalAllowance += (status === 'single') ? 132000 : 264000;
-    
-    // 子女免稅額
-    if (document.getElementById('chkChild').checked) {
-        const childCount = parseInt(document.getElementById('childCount').value) || 0;
-        totalAllowance += childCount * 130000;
-    }
-    
-    // 供養 55-59 歲父母
-    if (document.getElementById('chkParent').checked) {
-        const count = parseInt(document.getElementById('parentCount').value) || 0;
-        totalAllowance += count * 25000;
-        if (document.getElementById('chkParentReside').checked) {
-            totalAllowance += count * 25000; // 額外同住免稅額
-        }
-    }
-    
-    // 供養 60 歲或以上父母
-    if (document.getElementById('chkParentSenior').checked) {
-        const count = parseInt(document.getElementById('parentSeniorCount').value) || 0;
-        totalAllowance += count * 50000;
-        if (document.getElementById('chkParentSeniorReside').checked) {
-            totalAllowance += count * 50000; // 額外同住免稅額
-        }
-    }
-
-    // 3. 可扣稅項目
-    let totalDeductions = 0;
-    if (document.getElementById('chkHomeLoan').checked) {
-        totalDeductions += Math.min(parseFloat(document.getElementById('homeLoanAmt').value) || 0, 100000);
-    }
-
-    // 總扣除額 = 免稅額 + 可扣稅項目
-    let finalTotalAllowances = totalAllowance + totalDeductions;
-
-    // 4. 計算應課稅入息
-    let netIncome = income - mpf; 
-    let netChargeable = netIncome - finalTotalAllowances; 
-    if (netChargeable < 0) netChargeable = 0;
-
-    // 5. 累進稅率計算
-    let progressiveTax = 0;
-    let tempChargeable = netChargeable;
-    const taxBands = [50000, 50000, 50000, 50000];
-    const taxRates = [0.02, 0.06, 0.10, 0.14];
-    
-    for (let i = 0; i < taxBands.length; i++) {
-        if (tempChargeable > 0) {
-            let chunk = Math.min(tempChargeable, taxBands[i]);
-            progressiveTax += chunk * taxRates[i];
-            tempChargeable -= chunk;
-        }
-    }
-    if (tempChargeable > 0) {
-        progressiveTax += tempChargeable * 0.17;
-    }
-
-    // 6. 標準稅率計算
-    let standardTax = (netIncome > 5000000) ? (5000000 * 0.15) + ((netIncome - 5000000) * 0.16) : netIncome * 0.15;
-    if (standardTax < 0) standardTax = 0;
-
-    // 7. 擇輕評稅
-    let rawTax = progressiveTax;
-    let modeText = "累進稅率";
-    if (standardTax < progressiveTax && netChargeable > 0) {
-        rawTax = standardTax;
-        modeText = "標準稅率";
-    }
-
-    // 8. 2025/26 政府稅款寬減 (100%, 上限 $3,000)
-    let reduction = Math.min(rawTax, 3000);
-    let finalTax = rawTax - reduction;
-
-    // 渲染結果
-    document.getElementById('resIncome').innerText = '$' + income.toLocaleString();
-    document.getElementById('resMPF').innerText = '-$' + mpf.toLocaleString();
-    document.getElementById('resAllowance').innerText = '-$' + finalTotalAllowances.toLocaleString();
-    document.getElementById('resNetChargeable').innerText = '$' + netChargeable.toLocaleString();
-    document.getElementById('resMode').innerText = modeText;
-    document.getElementById('resRawTax').innerText = '$' + Math.round(rawTax).toLocaleString();
-    document.getElementById('resReduction').innerText = '-$' + Math.round(reduction).toLocaleString();
-    document.getElementById('resFinalTax').innerText = '$' + Math.round(finalTax).toLocaleString();
-
-    document.getElementById('resultBox').style.display = 'block';
-}
-</script>
 
 </body>
 </html>
